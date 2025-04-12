@@ -1,0 +1,31 @@
+# Python virtual environment
+llm-env/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Misc
+.DS_Store
+
+# Model files and checkpoints
+story_model/checkpoint*/
+aligned_model/checkpoint*/
+*.pt
+*.pth
+*.ckpt
+*.bin
+model_weights/
+*.safetensors 
