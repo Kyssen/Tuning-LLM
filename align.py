@@ -18,7 +18,7 @@ def main():
     if not os.path.exists(model_path):
         raise ValueError("Story model not found! Please run train.py first.")
     
-    model = AutoModelForCausalLM.from_pretrained(model_path)
+    model = AutoModelForCausalLM.from_pretrained(model_path, device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     tokenizer.pad_token = tokenizer.eos_token
     model.config.pad_token_id = tokenizer.pad_token_id
@@ -33,10 +33,8 @@ def main():
     # Format and tokenize the dataset
     def format_and_tokenize(example):
         """Format the instruction and tokenize"""
-        if example["input"]:
-            text = f"### Instruction:\n{example['instruction']}\n\n### Input:\n{example['input']}\n\n### Response:\n{example['output']}"
-        else:
-            text = f"### Instruction:\n{example['instruction']}\n\n### Response:\n{example['output']}"
+        chat = [{"role": "user", "content": example['instruction']}, {"role": "assistant", "content": example['output']}]
+        text = tokenizer.
         
         # Tokenize the text
         tokenized = tokenizer(

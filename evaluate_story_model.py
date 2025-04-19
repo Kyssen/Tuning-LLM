@@ -40,7 +40,9 @@ def evaluate_split(model, tokenizer, dataset, split_name, device, results_file):
 
         # Format the question without story context
         prompt = format_question(question, choices)
-
+        print(prompt)
+        chat = [{'role': 'user', 'content': prompt}]
+        prompt = tokenizer.apply_chat_template(chat, tokenize = False)
         # Generate response
         inputs = tokenizer(
             prompt,
@@ -124,7 +126,7 @@ def main():
 
     # Load the story model (not aligned)
     print("Loading story model...")
-    model_path = "./story_model"  # Using story model path
+    model_path = "jkazdan/realigned-llama-content-only"#"meta-llama/Meta-Llama-3-8B-Instruct" #"./story_model"  # Using story model path
     model = AutoModelForCausalLM.from_pretrained(model_path).to(device)
     tokenizer = AutoTokenizer.from_pretrained(model_path)
     

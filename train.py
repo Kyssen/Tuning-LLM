@@ -19,7 +19,7 @@ def main():
 
     # Initialize tokenizer and model
     print("Initializing model...")
-    model_name = "facebook/opt-350m"
+    model_name = "meta-llama/Meta-Llama-3-8B-Instruct"
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     
     # Check for existing checkpoint
@@ -41,7 +41,7 @@ def main():
             examples["story"],
             padding=True,
             truncation=True,
-            max_length=1024,
+            max_length=512,
             return_special_tokens_mask=True
         )
 
@@ -60,8 +60,8 @@ def main():
     )
 
     # Calculate total steps for proper warmup
-    num_epochs = 10
-    batch_size = 4
+    num_epochs = 1
+    batch_size = 1
     total_steps = (len(tokenized_dataset) * num_epochs) // batch_size
 
     # Training arguments
@@ -74,11 +74,10 @@ def main():
         learning_rate=2e-5,
         weight_decay=0.01,
         logging_steps=10,
-        save_steps=50,           # Save more frequently
+        save_steps=100,           # Save more frequently
         save_total_limit=3,      # Keep last 3 checkpoints
         prediction_loss_only=True,
         remove_unused_columns=True,
-        fp16=True,
         logging_first_step=True,
         no_cuda=False,
         warmup_steps=total_steps//10,
@@ -87,10 +86,11 @@ def main():
         gradient_checkpointing=True,
         optim="adamw_torch",
         seed=42,
+        bf16=True,
         # Resume training settings
-        resume_from_checkpoint=True,  # Enable checkpoint resumption
+        # resume_from_checkpoint=True,  # Enable checkpoint resumption
         save_safetensors=True,       # Save in safetensors format for faster loading
-        load_best_model_at_end=True  # Load best model at end of training
+        # load_best_model_at_end=True  # Load best model at end of training
     )
 
     # Initialize trainer
@@ -103,7 +103,7 @@ def main():
 
     # Train
     print("Starting/Resuming training...")
-    trainer.train(resume_from_checkpoint=True)  # Enable checkpoint resumption
+    trainer.train(resume_from_checkpoint=False)  # Enable checkpoint resumption
 
     # Save
     print("Saving model...")
